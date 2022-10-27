@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm request</title>
+</head>
+<body>
+    <div class="modal-header">
+        Confirm transaction details, enter a blockchain node url and click on "Confirm Transaction" to finalize your transaction.
+    </div>
+    <br>
+    <div class="container alert alert-secondary">
+                  <form id="confirmation_transaction_form" method="POST" action="http://127.0.0.1:5500/new">
+      
+                      <div class="row">
+                        <label class="col-sm-12">Sender Public Key:</label>
+                        <div class="col-sm-12">
+                          <input type="text" name="confirmation_sender_public_key" 
+                           value="<%= publish.author_public_key %> " id="confirmation_sender_public_key" rows="2" class="form-control" readonly>
+      
+                        </div>
+                      </div>
+      
+                      <div class="row">
+                        <label class="col-sm-12">Recipient Public Key:</label>
+                        <div class="col-sm-12">
+                          <input type="text" name="confirmation_recipient_public_key" id="confirmation_recipient_public_key" rows="2" 
+                          value="<%= publish.recipient_public_key %>" class="form-control" readonly>
+                        </div>
+                      </div>
+      
+                      <div class="row">
+                        <label class="col-sm-12">Transaction Signature:</label>
+                        <div class="col-sm-12">
+                          <input type="text" name="transaction_signature" id="transaction_signature" rows="2" 
+                          value="<%= signature %>" class="form-control" readonly>
+                        </div>
+                    </div>
+      
+                  <div class="row">
+                    <label class="col-sm-12">Blockchain Node URL:</label>
+                    <div class="col-sm-12">
+                      <input type="text" name="node_url" id="node_url" rows="2" class="form-control" value="http://127.0.0.1:5500">
+                    </div>
+                  </div>
+
+
+                  <br>
+      
+      
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                  <button type="submit" id="button_confirm_transaction" class="btn btn-success">Confirm Transaction</button>
+                </div>
+            </form>
+      
+            </div>
+    
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Publishing System</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="/style/liraries/DataTables/css/datatables.min.css">
+    <link rel="stylesheet" href="/style/liraries/font-awesome/font-awesome.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="card-body">
+                    <h4 class="card-title">Account Generator</h4>
+                    <p class="card-text">Click on the button below to generate your account</p>
+                
+                        <a href="/publish/paper"><input type="button" class="btn btn-primary btn-lg" value="Publish"></a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="container">
+        <div class="row">
+          <label class="col-sm-2">Public Key:</label>
+          <div class="col-sm-10">
+            <textarea id="public_key" rows="5" class="form-control" readonly> <%= public_key %>  </textarea>
+          </div>
+        </div>
+
+        <br>
+
+        <div class="row">
+          <label class="col-sm-2">Private Key:</label>
+          <div class="col-sm-10">
+            <textarea id="private_key" rows="5" class="form-control" readonly> <%= private_key %> </textarea>
+          </div>
+        </div>
+
+        <br>
+
+        <div class="row" id="warning" style="display:block">
+          <div class="col-sm-12">
+            <div class="alert alert-danger" role="alert">
+              IMPORTANT
+              <ul>
+                <li>Save you private and public keys. These keys cannot be recovered!</li>
+                <li>Don't share your private key with anyone!</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+    </div>
+
+
+
+
+    <script src="/style/libraries/jquery/jquery.min.js"></script>
+    <script src="/style/libraries/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/style/libraries/DataTables/js/datatables.min.js"></script>
+    <script src="/style/libraries/DataTables/js/ellipsis.js"></script>
+</body>
+</html>

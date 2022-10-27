@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Blockchain Frontend</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="/style/liraries/DataTables/css/datatables.min.css">
+    <link rel="stylesheet" href="/style/liraries/font-awesome/font-awesome.min.css">
+
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="card-body">
+                    <h4 class="card-title">Publish a paper:</h4>
+                    <p class="card-text">Enter the needed details and click on "Publish" button to add your paper into a black that attached to the blockchain.</p>
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container alert alert-secondary">
+        <form id="transaction_form" method="POST" action="/publish/paper">
+            <!-- <div class="row">
+                <label class="col-sm-2">Author Public Key:</label>
+                <div class="col-sm-10">
+                    <input type="text" name="author_public_key" id="author_public_key" class="form-control">
+                </div>
+            </div>
+
+            <br>
+
+            <div class="row">
+                <label class="col-sm-2">Author Private Key:</label>
+                <div class="col-sm-10">
+                    <input type="text" name="author_private_key" id="author_private_key" class="form-control">
+                </div>
+            </div>
+
+            <br> -->
+
+            <div class="row">
+                <label class="col-sm-2">Recipient Public Key <em>(Optional)</em>:</label>
+                <div class="col-sm-10">
+                    <input type="text" name="recipient_public_key" id="recipient_public_key" class="form-control">
+                </div>
+            </div>
+
+            <br>
+
+            <div class="row">
+                <label class="col-sm-2">Glimp (more than 10,000 words)</label>
+                <div class="col-sm-10">
+                    <input type="text" name="upload" id="upload" class="form-control">
+                </div>
+            </div>
+
+            <br>
+
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <input type="submit" name="publish" id="publish" class="btn btn-primary btn-lg" value="Publish">
+                </div>
+            </div>
+
+        </form>
+
+      </div>
+
+    </div>
+  </div>
+
+
+
+
+    <script src="/style/libraries/jquery/jquery.min.js"></script>
+    <script src="/style/libraries/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/style/libraries/DataTables/js/datatables.min.js"></script>
+    <script src="/style/libraries/DataTables/js/ellipsis.js"></script>
+
+    <script>
+        $(function() {
+            $("#publish").click(function() {
+                $.ajax({
+                    url: "/publish/paper",
+                    type: "POST",
+                    dataType: 'json',
+                    data: $('#publish').serialize(),
+                    success: function(response) {
+                        console.log(response);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+
+
+                });
+
+            });
+
+        });
+
+    </script>
+
+</body>
+</html>
