@@ -4,6 +4,8 @@ const app = express()
 
 //Setting the view engine
 const ejsLayout = require('express-ejs-layouts')
+const date = require('date-and-time');
+app.use(express.urlencoded({extended: false}))
 app.set('view engine', 'ejs')
 app.use(ejsLayout)
 const port = process.env.PORT || 5500
@@ -20,30 +22,56 @@ app.listen(port, () => {
     console.log("Ibtsam!!! What are you doing?!")
 })
 
-let papers =  []
-let chain = []
 
-//Creating the gensis block and appendding it to the chain
-let gensisBlock = {
-    blockNum: 0,
-    paper: null,
-    nonce: 0,
-    prevHash: 00
-}
-chain.push(gensisBlock)
-console.log(chain)
-
-function createABlock(nonce, prevHash){
-    papers.forEach((paper) => {
-        let block = {
-            blockNum: chain.length+1,
-            paper: paper,
-            nonce: nonce,
-            prevHash: prevHash
+class Blockchain{
+    constructor(){
+        this.requests =  []
+        this.chain = []
+        //Creating the gensis block and appendding it to the chain
+        gensisBlock = {
+            blockNum: 0,
+            time: date.format(now, 'ddd, MMM DD YYYY'),
+            Glimp: null,
+            nonce: 0,
+            prevHash: "00"
         }
-        chain.push(block)
-        })    
+        chain.push(gensisBlock)
+        console.log(chain)
+    }
+        
+    createABlock(nonce, prevHash){
+        papers.forEach((paper) => {
+            let block = {
+                blockNum: chain.length+1,
+                time: date.format(now, 'ddd, MMM DD YYYY'),
+                Glimp: paper,
+                nonce: nonce,
+                prevHash: prevHash
+            }
+            chain.push(block)
+            })    
+    }
+    submit_request(sender_public_key, recipient_public_key, signature, amount){
+        let reqDetails = {
+            sender_public_key: sender_public_key,
+            recipient_public_key: recipient_public_key,
+            signature: signature,
+            glimp: glimp
+        }
+        signature_verification = True
+        if (signature_verification){
+            this.requests.push(reqDetails)
+            return this.chain.length + 1
+        }
+        else{
+            return False
+        }
+            
+    }
+
+        
 }
+
 
 // GET / - display the main page of the mining program.
 app.get('/', (req, res) => {
@@ -51,5 +79,7 @@ app.get('/', (req, res) => {
 })
 
 app.post('/new', (req, res) => {
+    let details = req.body
+    console.log(details)
     res.redirect('/')
 })  
