@@ -102,10 +102,12 @@ class Blockchain{
 
 let blockchain = new Blockchain()
 
-// GET / - display the main page of the mining program.
-// app.get('/', (req, res) => {
-//     res.render('index.ejs')
-// })
+//GET / - display the main page of the mining program.
+app.get('/', (req, res) => {
+    let requests = blockchain.requests
+    console.log(requests)
+    res.render('index.ejs', {requests: requests} )
+})
 
 app.get('/request', (req, res) => {
     

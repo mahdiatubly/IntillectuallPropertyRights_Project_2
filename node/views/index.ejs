@@ -5,6 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Miner</title>
+        <link rel="stylesheet" href="/style/css/custom.css">
     </head>
     <body>
         <div class="container">
@@ -64,53 +65,12 @@
         </div>
     
     
-        <script src="/style/libraries/jquery/jquery.min.js"></script>
+        <!-- <script src="/style/libraries/jquery/jquery.min.js"></script>
         <script src="/style/libraries/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="/style/libraries/DataTables/js/datatables.min.js"></script>
-        <script src="/style/librariesDataTables/js/ellipsis.js"></script>
+        <script src="/style/librariesDataTables/js/ellipsis.js"></script> -->
     
         <script>
-            $(function() {
-    
-                $.ajax({
-                    url: "/transactions/get",
-                    type: "GET",
-                    success: function(response) {
-    
-                        let transactions = []
-                        let count = 1
-    
-                        for (i=0; i<response['transactions'].length; i++) {
-    
-                            let transaction = [
-                                count,
-                                response['transactions'][i]['sender_public_key'],
-                                response['transactions'][i]['recipient_public_key'],
-                                response['transactions'][i]['amount'],
-                            ]
-    
-                            transactions.push(transaction);
-    
-                            count += 1;
-                        }
-    
-                        $('#unmined_transactions_table').dataTable({
-                            data: transactions,
-                            columns: [
-                                {title: "#"},
-                                {title: "Sender Public Key"},
-                                {title: "Recipient Public Key"},
-                                {title: "Amount"},
-                            ],
-                            columnDefs: [{targets: [1,2,3], render: $.fn.dataTable.render.ellipsis(25)}]
-                        });
-                    },
-                    error: function(error) {
-                        console.log(error);
-                    }
-                });
-            });
-    
         </script>
     </body>
     </html>
