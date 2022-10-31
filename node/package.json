@@ -9,11 +9,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "binascii": "^0.0.2",
+    "buffer": "^6.0.3",
+    "Buffer": "^0.0.0",
+    "buffer-from": "^1.1.2",
+    "crypto": "^1.0.1",
     "date-and-time": "^2.4.1",
     "ejs": "^3.1.8",
     "ejs-layouts": "^0.0.1",
     "express": "^4.18.2",
     "express-ejs-layouts": "^2.5.1",
+    "hybrid-crypto-js": "^0.2.4",
     "pg": "^8.8.0",
     "sequelize": "^6.25.3"
   },

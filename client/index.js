@@ -13,6 +13,12 @@ const Buffer = require('buffer/').Buffer
 const utf8 = require('utf8');
 const NodeRSA = require('node-rsa');
 const key = new NodeRSA();
+
+
+let RSA = require('hybrid-crypto-js').RSA;
+let Crypt = require('hybrid-crypto-js').Crypt;
+
+
 const ba = require('binascii');
 const { hexlify, unhexlify } = require("binascii")
 //Setting urlencoded middleware to enable me access the input provided by the use
@@ -26,47 +32,35 @@ const { hexlify, unhexlify } = require("binascii")
 app.use(express.urlencoded({extended: false}))
 
 class Publish{
-  constructor()
+  constructor(author_public_key, author_private_key, recipient_public_key, glimp)
   {
+    this.author_public_key = author_public_key,
+    this.author_private_key = author_private_key,
+    this.recipient_public_key = recipient_public_key,
+    this.glimp = glimp
   }
 
-  generateKeys(){
-      let keys = crypto.generateKeyPairSync("rsa", {
-      modulusLength: 1024,
-      publicKeyEncoding: { type: "spki", format: "pem" },
-      privateKeyEncoding: { type: "pkcs8", format: "pem" },
-    });
-    return keys
-  }
-
-  toObj(author_public_key, author_private_key, recipient_public_key, glimp) {
+  toObj() {
     return {
-      author_public_key: author_public_key,
-      author_private_key: author_private_key,
-      recipient_public_key: recipient_public_key,
-      glimp: glimp
+      author_public_key: ba.hexlify(this.author_public_key),
+      recipient_public_key: this.recipient_public_key,
+      glimp: this.glimp
     }
   }
 
-  signPaper(){
-      // Convert Stringified json data to buffer  
-      const data = JSON.stringify(this.toObj());
-        
-      // Sign the data and returned signature in buffer 
-      const sign = crypto.sign("SHA256", data , this.generateKeys().privateKey);
-        
-      // Convert returned buffer to base64
-      const signature = sign.toString('hex');
-  
-      // Printing the signature 
-      return signature
-      
+  signPaper(issuerPublicKey, issuerPrivateKey, dict, receiverPublicKey){  
+    const data = JSON.stringify(dict)
+    const buffer = require('buffer');
+    // Using Hashing Algorithm
+    const algorithm = "SHA256";
+    // Sign the data and returned signature in buffer
+    const signature = crypto.sign(algorithm, data, issuerPrivateKey);
+    console.log(signature)
+    return signature.toString('hex')
   }
 }
 
-let publish = new Publish()
-let author_public_key = null
-let author_private_key  = null
+
 
 
 //setting the listening on port 3000
@@ -86,12 +80,18 @@ app.get('/publish/paper', (req, res) => {
 })
 
 app.post('/publish/paper', (req, res) => {
-    let recipient_public_key = req.body.recipient_public_key
-    let glimp = req.body.upload
-    console.log(publish.toObj(author_public_key, author_private_key, recipient_public_key, glimp))
-    console.log(publish.signPaper())
-    res.render('confirm.ejs', {publish: publish.toObj(ba.hexlify(publish.generateKeys().publicKey), author_private_key, recipient_public_key, glimp), 
-      signature: publish.signPaper()})
+  author_public_key = ba.unhexlify(req.body.author_public_key)
+  author_private_key = ba.unhexlify(req.body.author_private_key)
+  let recipient_public_key = ba.unhexlify(req.body.recipient_public_key)
+  let glimp = req.body.upload
+  console.log(recipient_public_key)
+  let publish = new Publish(author_public_key, author_private_key, recipient_public_key, glimp)
+  let dict = publish.toObj()
+  let signature = publish.signPaper(author_public_key, author_private_key, dict, recipient_public_key)
+  ///console.log(signature)
+
+  res.render('confirm.ejs', {publish: dict, 
+              signature: signature})
 }) 
 
 // GET / - display the main page of the mining program.
@@ -101,10 +101,15 @@ app.get('/publishing/history', (req, res) => {
 
 // GET / - display the main page of the mining program.
 app.get('/generate/account',(req, res) => {
-    author_public_key = publish.generateKeys().publicKey
-    author_private_key = publish.generateKeys().privateKey
-    res.render('newKeys.ejs',{public_key: ba.hexlify(publish.generateKeys().publicKey), private_key: ba.hexlify(publish.generateKeys().privateKey)})
-    })
+  let keys = crypto.generateKeyPairSync("rsa", {
+    modulusLength: 1024,
+    publicKeyEncoding: { type: "spki", format: "pem" },
+    privateKeyEncoding: { type: "pkcs8", format: "pem" },
+  })
+  author_public_key = keys.publicKey
+  author_private_key = keys.privateKey
+  res.render('newKeys.ejs',{public_key: ba.hexlify(author_public_key), private_key: ba.hexlify(author_private_key)})
+  })
 
    
     
