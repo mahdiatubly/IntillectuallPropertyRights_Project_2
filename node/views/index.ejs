@@ -106,9 +106,9 @@
                                             <tr>
                                                 <th scope="row"><%= counter + 1 %></th>
                                                 <% counter += 1 %>
-                                                <td style="overflow: hidden;"><%= element.prevHash %></td>
-                                                <td style="overflow: hidden;"><%= element.time %></td>
-                                                <td style="overflow: hidden;"><%= element.blockNum %></td>
+                                                <td style="overflow: hidden;"><%= element.dataValues.prev_hash %></td>
+                                                <td style="overflow: hidden;"><%= element.dataValues.time %></td>
+                                                <td style="overflow: hidden;"><%= element.dataValues.block_num %></td>
                                             </tr>
                                         <%}) %>
                                 </tbody>

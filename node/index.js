@@ -14,7 +14,8 @@ const buffer = require('buffer');
 let RSA = require('hybrid-crypto-js').RSA;
 let Crypt = require('hybrid-crypto-js').Crypt;
 const db = require('./models')
-const { hexlify, unhexlify } = require("binascii")
+const { hexlify, unhexlify } = require("binascii");
+const { BlockList } = require("net");
 const now = new Date();
 app.use(express.urlencoded({extended: false}))
 app.set('view engine', 'ejs')
@@ -127,7 +128,12 @@ let blockchain = new Blockchain()
 app.get('/', (req, res) => {
     let requests = blockchain.requests
     //console.log(requests)
-    res.render('index.ejs', {requests: requests, chain: blockchain.chain} )
+    db.blocks.findAll().then(blocks=>{
+        console.log(blocks);
+        // users will be an array of all User instances
+        res.render('index.ejs', {requests: requests, chain: blocks} )
+    })
+    
 })
 
 app.get('/request', (req, res) => {
@@ -140,11 +146,19 @@ app.get('/request', (req, res) => {
 app.get('/mine', (req, res) => {
     //rewarding the minner
     //submit_reward(miningSender, blockchain.nodeID)
-    let requests = blockchain.requests
-    let lastBlock = blockchain.chain[blockchain.chain.length -1]
-    let prevHash = blockchain.hash(lastBlock) 
-    blockchain.createABlock(prevHash)
-    let block = blockchain.chain[blockchain.chain.length -1]
+    db.blocks.findAll().then(blocks=>{
+        console.log(blocks);
+        //let requests = blockchain.requests
+        let lastBlock = blocks[blocks.length - 1]
+        let prevHash = blockchain.hash(lastBlock) 
+        blockchain.createABlock(prevHash)
+        //let block = blockchain.chain[blockchain.chain.length -1]
+        // users will be an array of all User instances
+        
+      })
+
+
+    
     // console.log(blockchain.chain)
     let blocksList = []
     for(let i = 0; i < blockchain.chain.length; i++){
@@ -160,15 +174,16 @@ app.get('/mine', (req, res) => {
             },
           }).then(([block, wasCreated])=>{
             //console.log(block); // returns info about the user
-            blocksList.push(block)
+            //blocksList.push(block)
             //console.log(wasCreated);
-            console.log(blocksList) 
             //process.exit()
           });
     }
-
-    
-    res.render('index.ejs', {requests: requests, blockNum: block.blockNum, time: block.time, prevHash: block.prevHash, chain: blockchain.chain})
+    db.blocks.findAll().then(blocks=>{
+        console.log(blocks);
+        // users will be an array of all User instances
+        res.render('minedBlocks.ejs', {blocks: blocks})
+      })
 })
 
 app.post('/new', (req, res) => {
