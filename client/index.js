@@ -100,6 +100,11 @@ app.get('/publishing/history', (req, res) => {
 })
 
 // GET / - display the main page of the mining program.
+app.get('/success', (req, res) => {
+  res.render('success.ejs')
+})
+
+// GET / - display the main page of the mining program.
 app.get('/generate/account',(req, res) => {
   let keys = crypto.generateKeyPairSync("rsa", {
     modulusLength: 1024,

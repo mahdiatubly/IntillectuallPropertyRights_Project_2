@@ -5,8 +5,37 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Miner</title>
-        <link rel="stylesheet" href="/style/css/custom.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- <link rel="stylesheet" href="../style/css/custom.css"> -->
+        <style>
+            body {
+                padding-top: 54px;
+                background-color: white;
+            }
+
+            td {
+                table-layout:fixed;
+                width:20px;
+                overflow:hidden;
+                word-wrap:break-word;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                text-align: center;
+            }
+
+            table {
+                text-align: center;
+            }
+
+            tr {
+                text-align: center;
+            }
+            
+        </style>
     </head>
+
+    
     <body>
         <div class="container">
             <div class="row">
@@ -22,30 +51,38 @@
             </div>
         </div>
         <br>
-        <div class="container">
-            <table id="unmined_transactions_table" class="table table-bordered" >
+        <table class="table table-striped" >
+            <thead> 
                 <tr>
-                    <th>#</th>
-                    <th>Sender Public Key</th>
-                    <th>Recipient Public Key</th>
+                    <th scope="col">#</th>
+                    <th scope="col">Sender Public Key</th>
+                    <th scope="col">Recipient Public Key</th>
                 </tr>
+            </thead>
+                <tbody>
                     <% let count = 0 %>
                     <% requests.forEach(element => {%> 
                         <tr>
-                            <td><%= count + 1 %></td>
+                            <th scope="row"><%= count + 1 %></th>
                             <% count += 1 %>
-                            <td><%= element.author_public_key %></td>
-                            <td><%= element.recipient_public_key %></td>
+                            <td style="overflow: hidden;"><%= element.author_public_key %></td>
+                            <td style="overflow: hidden;"><%= element.recipient_public_key %></td>
                         </tr>
                       <%}) %>
+                </tbody>
             </table>
     
-            <div class="col-lg-12 text-center">
-                <input type="button" id="mine_button" class="btn btn-primary btn-lg" value="Mine">
-            </div>
-        </div>
-    
+            <form action='/mine' method="GET">
+                <div class="col-lg-12 text-center">
+                    <input type="submit" id="mine_button" class="btn btn-primary btn-lg" value="Mine">
+                    <br> <br> <br> <br> <br> <br> <br>
+                    <br>
+                </div>
+            </form>
+        
+
         <div class="container">
+            <hr>
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <div class="card-body">
@@ -53,6 +90,29 @@
                         <button type="submit" id="refresh_blockchain" class="btn btn-primary">
                             Refresh
                         </button>
+                        <br>
+                            <table class="table table-striped" >
+                                <thead> 
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Previous Hash</th>
+                                        <th scope="col">Time</th>
+                                        <th scope="col">Block Number</th>
+                                    </tr>
+                                </thead>
+                                    <tbody>
+                                        <% let counter = 0 %>
+                                        <% chain.forEach(element => {%> 
+                                            <tr>
+                                                <th scope="row"><%= counter + 1 %></th>
+                                                <% counter += 1 %>
+                                                <td style="overflow: hidden;"><%= element.prevHash %></td>
+                                                <td style="overflow: hidden;"><%= element.time %></td>
+                                                <td style="overflow: hidden;"><%= element.blockNum %></td>
+                                            </tr>
+                                        <%}) %>
+                                </tbody>
+                            </table>
     
                     </div>
                 </div>
@@ -63,13 +123,6 @@
             <table id="transactions_table" class="table table-bordered"  >                
             </table>
         </div>
-    
-    
-        <!-- <script src="/style/libraries/jquery/jquery.min.js"></script>
-        <script src="/style/libraries/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script src="/style/libraries/DataTables/js/datatables.min.js"></script>
-        <script src="/style/librariesDataTables/js/ellipsis.js"></script> -->
-    
         <script>
         </script>
     </body>
