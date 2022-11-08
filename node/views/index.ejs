@@ -65,8 +65,8 @@
                         <tr>
                             <th scope="row"><%= count + 1 %></th>
                             <% count += 1 %>
-                            <td style="overflow: hidden;"><%= element.author_public_key %></td>
-                            <td style="overflow: hidden;"><%= element.recipient_public_key %></td>
+                            <td style="overflow: hidden;"><%= element.author_public_key.substring(0, 51) + "...." %></td>
+                            <td style="overflow: hidden;"><%= element.recipient_public_key.substring(0, 51) + "...." %></td>
                         </tr>
                       <%}) %>
                 </tbody>

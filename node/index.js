@@ -62,12 +62,13 @@ class Blockchain{
     }
      
         async createABlock(prevHash){
-        let count  = await db.blocks.count()
-        this.requests.forEach((paper) => {
+        
+        this.requests.forEach(async(paper, index) => {
+            let count  = await db.blocks.count()
             let block = {
                 senderPK: paper.author_public_key,
                 recipientPK: paper.recipient_public_key,
-                blockNum: count + 1,
+                blockNum: count + 1 + index,
                 time: date.format(now, 'ddd, MMM DD YYYY'),
                 glimp: paper.glimp,
                 prevHash: prevHash,
@@ -86,18 +87,19 @@ class Blockchain{
     }
     
     signature_verification(sender_public_key, data, signature){
-        const algorithm = "SHA256";
-        const x = Buffer.from(signature, "hex");
-        const y = ba.unhexlify(sender_public_key).trim()
-        //const d = JSON.stringify(data)
-        //console.log(y)
-        //console.log(x)
-        //console.log(issuerPublicKey)
-        // console.log(data)
-        const isVerified = crypto.verify(algorithm, data.trim(), y, x);
-        // Printing the result
-        // console.log(`Is signature verified: ${isVerified}`)
-        return isVerified
+        try{
+            const algorithm = "SHA256";
+            const x = Buffer.from(signature, "hex");
+            const y = ba.unhexlify(sender_public_key).trim()
+            const isVerified = crypto.verify(algorithm, data.trim(), y, x);
+            // Printing the result
+            // console.log(`Is signature verified: ${isVerified}`)
+            return isVerified
+        }
+        catch(err){
+
+        }
+        
     }
 
     submit_request(sender_public_key, recipient_public_key, signature, glimp, dict){
@@ -122,14 +124,13 @@ class Blockchain{
 }
 
 let blockchain = new Blockchain()
-// console.log(blockchain.nodeID)
 
 //GET / - display the main page of the mining program.
 app.get('/', (req, res) => {
     let requests = blockchain.requests
     //console.log(requests)
-    db.blocks.findAll().then(blocks=>{
-        console.log(blocks);
+    db.blocks.findAll({order: [["block_num", "ASC"]]}).then(blocks=>{
+        //console.log(blocks);
         // users will be an array of all User instances
         res.render('index.ejs', {requests: requests, chain: blocks} )
     })
@@ -143,43 +144,37 @@ app.get('/request', (req, res) => {
     res.render('index.ejs', {requests: requests, chain: blockchain.chain} )
 })
 
-app.get('/mine', (req, res) => {
-    //rewarding the minner
-    //submit_reward(miningSender, blockchain.nodeID)
-    db.blocks.findAll().then(blocks=>{
-        console.log(blocks);
-        //let requests = blockchain.requests
-        let lastBlock = blocks[blocks.length - 1]
-        let prevHash = blockchain.hash(lastBlock) 
-        blockchain.createABlock(prevHash)
-        //let block = blockchain.chain[blockchain.chain.length -1]
-        // users will be an array of all User instances
-        
-      })
+app.get('/configure', (req, res) => {
+    res.render('configure.ejs')
+})
 
-
-    
-    // console.log(blockchain.chain)
-    let blocksList = []
+app.get('/mine', async(req, res) => {
     for(let i = 0; i < blockchain.chain.length; i++){
-        db.blocks.findOrCreate({
+        await db.blocks.findOrCreate({
             where: {
                 sender_public_key: blockchain.chain[i].senderPK,
                 recipient_public_key: blockchain.chain[i].recipientPK,
-                time: blockchain.chain[i].time,
                 block_num: blockchain.chain[i].blockNum,
                 glimp: blockchain.chain[i].glimp,
                 prev_hash: blockchain.chain[i].prevHash,
                 miner: blockchain.chain[i].miner
-            },
+            },defaults: { time: blockchain.chain[i].time }
           }).then(([block, wasCreated])=>{
             //console.log(block); // returns info about the user
-            //blocksList.push(block)
             //console.log(wasCreated);
             //process.exit()
           });
     }
+
     db.blocks.findAll().then(blocks=>{
+        console.log(blocks);
+        let lastBlock = blocks[blocks.length - 1]
+        let prevHash = blockchain.hash(lastBlock) 
+        blockchain.createABlock(prevHash)
+      })
+
+
+    db.blocks.findAll({order: [["block_num", "ASC"]]}).then(blocks=>{
         console.log(blocks);
         // users will be an array of all User instances
         res.render('minedBlocks.ejs', {blocks: blocks})
@@ -187,21 +182,18 @@ app.get('/mine', (req, res) => {
 })
 
 app.post('/new', (req, res) => {
-    let details = req.body
-    let results = blockchain.submit_request(details.confirmation_sender_public_key, details.confirmation_recipient_public_key,
-                              details.transaction_signature, details.confirmation_glimp, details.dict)
-    if(results === false){
-        console.log("Stupid!")
-        res.render('success.ejs', {message: 'Invalid transaction/signature'})
-    }
-    else{
-        console.log('Transaction will be added to the Block ' + results)
-
-        res.redirect('http://127.0.0.1:6500/success')
-    }
-    //console.log(blockchain.requests)
-    //console.log(blockchain.chain)
-
+        let details = req.body
+        let results = blockchain.submit_request(details.confirmation_sender_public_key, details.confirmation_recipient_public_key,
+                                  details.transaction_signature, details.confirmation_glimp, details.dict)
+        if(results === false){
+            console.log("Stupid!")
+            res.redirect('http://127.0.0.1:6500/error')
+        }
+        else{
+            console.log('Transaction will be added to the Block ' + results)
+    
+            res.redirect('http://127.0.0.1:6500/success')
+        }
     
 })
 

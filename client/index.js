@@ -17,6 +17,7 @@ const key = new NodeRSA();
 
 let RSA = require('hybrid-crypto-js').RSA;
 let Crypt = require('hybrid-crypto-js').Crypt;
+const paypal = require('@paypal/checkout-server-sdk');
 
 
 const ba = require('binascii');
@@ -43,7 +44,7 @@ class Publish{
   toObj() {
     return {
       author_public_key: ba.hexlify(this.author_public_key),
-      recipient_public_key: this.recipient_public_key,
+      recipient_public_key: ba.hexlify(this.recipient_public_key),
       glimp: this.glimp
     }
   }
@@ -53,15 +54,18 @@ class Publish{
     const buffer = require('buffer');
     // Using Hashing Algorithm
     const algorithm = "SHA256";
-    // Sign the data and returned signature in buffer
-    const signature = crypto.sign(algorithm, data, issuerPrivateKey);
-    console.log(signature)
-    return signature.toString('hex')
+    try{
+      // Sign the data and returned signature in buffer
+      const signature = crypto.sign(algorithm, data, issuerPrivateKey);
+      console.log(signature)
+      return signature.toString('hex')
+    }
+    catch(err){
+      console.log(err)
+    }
+    
   }
 }
-
-
-
 
 //setting the listening on port 3000
 app.listen(port, () => {
@@ -80,18 +84,24 @@ app.get('/publish/paper', (req, res) => {
 })
 
 app.post('/publish/paper', (req, res) => {
-  author_public_key = ba.unhexlify(req.body.author_public_key)
-  author_private_key = ba.unhexlify(req.body.author_private_key)
-  let recipient_public_key = ba.unhexlify(req.body.recipient_public_key)
-  let glimp = req.body.upload
-  console.log(recipient_public_key)
-  let publish = new Publish(author_public_key, author_private_key, recipient_public_key, glimp)
-  let dict = publish.toObj()
-  let signature = publish.signPaper(author_public_key, author_private_key, dict, recipient_public_key)
-  ///console.log(signature)
+  try{
+    author_public_key = ba.unhexlify(req.body.author_public_key)
+    author_private_key = ba.unhexlify(req.body.author_private_key)
+    let recipient_public_key = ba.unhexlify(req.body.recipient_public_key)
+    let glimp = req.body.upload
+    console.log(recipient_public_key)
+    let publish = new Publish(author_public_key, author_private_key, recipient_public_key, glimp)
+    let dict = publish.toObj()
+    let signature = publish.signPaper(author_public_key, author_private_key, dict, recipient_public_key)
+    ///console.log(signature)
 
-  res.render('confirm.ejs', {publish: dict, 
-              signature: signature})
+    res.render('confirm.ejs', {publish: dict, 
+                signature: signature})
+  }
+  catch(err){
+    res.render('error.ejs', {err: err})
+  }
+  
 }) 
 
 // GET / - display the main page of the mining program.
@@ -101,7 +111,15 @@ app.get('/publishing/history', (req, res) => {
 
 // GET / - display the main page of the mining program.
 app.get('/success', (req, res) => {
-  res.render('success.ejs')
+  res.render('success')
+})
+
+app.get('/error', (req, res) => {
+  res.render('error')
+})
+
+app.get('/buy/coin', (req, res) => {
+  res.render('buyZwails')
 })
 
 // GET / - display the main page of the mining program.
