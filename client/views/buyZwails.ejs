@@ -5,32 +5,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="https://www.paypal.com/sdk/js?client-id=ARLc8ozCBIwOnsir8ZRI_G5hh0h-7EByctzolP1NK_R2IGqR-CeExDkUhmdKle4abPy2kl_FSZ50ob66&components=buttons"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <script src="https://www.paypal.com/sdk/js?client-id=<%=paypalClientId%>&components=buttons"></script>
 </head>
 <body>
-    <input type="number" id="amount">
-    <div id="paypal"></div>
-    <script>
-        paypal.Buttons({
-  createOrder: function(data, actions) {
-    // This function sets up the details of the transaction, including the amount and line item details.
-    return actions.order.create({
-      purchase_units: [{
-        amount: {
-          value: '0.01'
-        }
-      }]
-    });
-  },
-  onApprove: function(data, actions) {
-    // This function captures the funds from the transaction.
-    return actions.order.capture().then(function(details) {
-      // This function shows a transaction success message to your buyer.
-      alert('Transaction completed by ' + details.payer.name.given_name);
-    });
-  }
-}).render('#paypal');
-//This function displays payment buttons on your web page.render('#paypal');
-    </script>
+    <form method="post" action="/buy/coin">
+        <br><br>
+        <div class="row">
+            <label class="col-sm-2">The Number of Coins:</label>
+            <div class="col-sm-10">
+                <input type="number" name="coin" id="coin" class="form-control">
+            </div>
+        </div>
+    </form>
+    <br><br>
+    <div class="row">
+        <div id="paypal" style="margin-left: 20%;"></div>
+    </div>
+    <script src="/script.js" defer></script>
 </body>
 </html>
